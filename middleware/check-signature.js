@@ -3,9 +3,9 @@ const crypto = require('crypto');
 
 module.exports = opts => {
 	return (req, res, next) => {
-		const { signature, echostr, timestamp, nonce } = req.query;
-
+		opts = opts || {};
         const token = opts.token;
+		const { signature, echostr, timestamp, nonce } = req.query;
 
         const sha_str = crypto
             			.createHash('sha1')

@@ -1,7 +1,7 @@
 'use strict';
 const Express = require('express');
 const crypto = require('crypto');
-const config = require('./config.json');
+const config = require('./config/config.json');
 const utils = require('./lib/utils.js');
 
 const app = new Express();
