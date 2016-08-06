@@ -1,0 +1,8 @@
+{
+	"wechat":{
+		"appId": "xxx",
+		"appSecret": "bbb",
+		"token": "hhh"
+	},
+	"port": 3000
+}

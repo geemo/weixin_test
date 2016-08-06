@@ -1,0 +1,30 @@
+{
+  "name": "weixin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.14.0",
+    "wechat": "^2.0.3",
+    "wechat-api": "^1.28.0",
+    "xml2js": "^0.4.16"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-3": "^6.11.0"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-3"
+    ],
+    "plugins": []
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
