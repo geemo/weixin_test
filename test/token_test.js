@@ -7,6 +7,5 @@ const token = new AccessToken(config.wechat);
 
 token
     .get()
-    .then(tk => {
-        console.log(tk);
-    }, err => console.log(err));
+    .then(tk => console.log(tk),
+         err => console.log(err));

@@ -1,7 +1,7 @@
 'use strict';
 const crypto = require('crypto');
 
-module.exports = opts => {
+exports = module.exports = opts => {
 	return (req, res, next) => {
 		opts = opts || {};
         const token = opts.token;

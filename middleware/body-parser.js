@@ -2,7 +2,7 @@
 const utils = require('../lib/utils.js');
 
 
-module.exports = (req, res, next) => {
+exports = module.exports = (req, res, next) => {
     let chunks = [];
     req.on('data', data => {
         chunks.push(data);

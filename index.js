@@ -1,14 +1,15 @@
 'use strict';
-const Express = require('express');
-const crypto = require('crypto');
-const config = require('./config/config.json');
-const utils = require('./lib/utils.js');
-
-const app = new Express();
+const http = require('http');
+const app = require('express')();
 
 // middlewares
 const checkSignature = require('./middleware/check-signature.js');
 const bodyParse = require('./middleware/body-parser.js');
+// config
+const config = require('./config/config.json');
+
+// 给http.ServerResponse扩展reply方法
+require('./lib/wechat_reply.js')(http.ServerResponse);
 
 app.use(checkSignature(config.wechat));
 app.use(bodyParse);
@@ -16,19 +17,12 @@ app.use((req, res, next) => {
 
     const body = req.body;
     if (body.MsgType === 'event' && body.Event === 'subscribe') {
-		let reply_txt = `<xml>
-						<ToUserName><![CDATA[${body.FromUserName}]]></ToUserName>
-						<FromUserName><![CDATA[${body.ToUserName}]]></FromUserName>
-						<CreateTime>${Date.now()}</CreateTime>
-						<MsgType><![CDATA[text]]></MsgType>
-						<Content><![CDATA[hi, my dog]]></Content>
-						</xml>`
-
-		console.log(body);
-		console.log(reply_txt);
-
   		res.writeHead(200, {'Content-Type': 'application/xml'});
-        res.end(reply_txt);
+        res.reply({
+        	ToUserName: body.FromUserName,
+        	FromUserName: body.ToUserName,
+			Content: 'hello world'
+		});
     } else {
     	res.end('');
     }
@@ -40,4 +34,6 @@ app.use((err, req, res, next) => {
 	else res.status(500).end('');
 });
 
-app.listen(config.port, () => console.log(`server start on port ${config.port}`));
+http
+	.createServer(app)
+	.listen(config.port, () => console.log(`server start on port ${config.port}`));
