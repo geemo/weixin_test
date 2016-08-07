@@ -1,18 +1,20 @@
 'use strict';
 const http = require('http');
-const app = require('express')();
+const app = require('connect')();
 
 // middlewares
+const queryParser = require('./middleware/query-parser.js');
 const checkSignature = require('./middleware/check-signature.js');
-const bodyParse = require('./middleware/body-parser.js');
+const bodyParser = require('./middleware/body-parser.js');
 // config
 const config = require('./config/config.json');
 
 // 给http.ServerResponse扩展reply方法
 require('./lib/wechat_reply.js')(http.ServerResponse);
 
+app.use(queryParser);
 app.use(checkSignature(config.wechat));
-app.use(bodyParse);
+app.use(bodyParser);
 app.use((req, res, next) => {
 
     const body = req.body;
@@ -30,8 +32,13 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
 	if(err) console.log(err);
-	if(req.headersSent) next(err);
-	else res.status(500).end('');
+	
+	if(req.headersSent) {
+		next(err);
+	} else {
+		res.writeHead(500);
+		res.end();
+	}
 });
 
 http
