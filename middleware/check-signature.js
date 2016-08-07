@@ -9,8 +9,7 @@ exports = module.exports = opts => {
 
         const sha_str = crypto
             			.createHash('sha1')
-            			.update([token, timestamp, nonce].sort()
-            			.join(''))
+            			.update([token, timestamp, nonce].sort().join(''))
             			.digest('hex');
 		
         if (req.method === 'GET') {

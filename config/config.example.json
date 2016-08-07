@@ -3,7 +3,7 @@
 		"appId": "xxx",
 		"appSecret": "bbb",
 		"token": "hhh",
-		"tokenPrefix": "https://api.weixin.qq.com/cgi-bin/token"
+		"prefix": "https://api.weixin.qq.com/cgi-bin/"
 	},
 	"port": 3000,
 	"tokenPath": "../token.dat"

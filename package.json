@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "connect": "^3.4.1",
+    "form-data": "^1.0.0-rc4",
     "xml2js": "^0.4.16"
   },
   "scripts": {

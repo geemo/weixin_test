@@ -20,11 +20,40 @@ app.use((req, res, next) => {
     const body = req.body;
     if (body.MsgType === 'event' && body.Event === 'subscribe') {
   		res.writeHead(200, {'Content-Type': 'application/xml'});
-        res.reply({
-        	ToUserName: body.FromUserName,
-        	FromUserName: body.ToUserName,
-			Content: 'hello world'
+  //       res.reply({
+  //       	ToUserName: body.FromUserName,
+  //       	FromUserName: body.ToUserName,
+		// 	Content: 'hello world'
+		// });
+		res.reply({
+			ToUserName: body.FromUserName,
+			FromUserName: body.ToUserName,
+			Title: 'aaa',
+			Description: 'bbb',
+			MusicUrl: 'http://mp3.haoduoge.com/s/2016-08-07/1470550774.mp3'
 		});
+		// res.reply({
+		// 	ToUserName: body.FromUserName,
+		//  	FromUserName: body.ToUserName,
+		//  	Articles: [
+		//  		{
+		//  			Title: 'asdf',
+		//  			Description: 'bbb',
+		//  			PicUrl: 'http://p4.music.126.net/g0qH9Xr9k4OKp03RLpqy_Q==/1367792466801028.jpg?param=130y130',
+		//  			Url: 'http://music.163.com/'
+		//  		},
+
+		//  		{
+		//  			Title: 'cccc',
+		//  			Description: 'gggg',
+		//  			PicUrl: 'http://p4.music.126.net/g0qH9Xr9k4OKp03RLpqy_Q==/1367792466801028.jpg?param=130y130',
+		//  			Url: 'http://music.163.com/'
+		//  		}
+		//  	]
+		// });
+
+		// res.writeHead(200, {'Content-Type': 'application/xml'});
+		// res.end(`<xml><ToUserName><![CDATA[${body.FromUserName}]]></ToUserName><FromUserName><![CDATA[${body.ToUserName}]]></FromUserName><CreateTime>1470551790</CreateTime><MsgType><![CDATA[music]]></MsgType><Music><Title><![CDATA[asdf]]></Title><Description><![CDATA[bbb]]></Description><MusicUrl><![CDATA[http://sc.111ttt.com/up/mp3/347508/FCAF062BECD1C24FAED2A355EF51EBDD.mp3]]></MusicUrl><HQMusicUrl><![CDATA[http://sc.111ttt.com/up/mp3/347508/FCAF062BECD1C24FAED2A355EF51EBDD.mp3]]></HQMusicUrl><ThumbMediaId><![CDATA[http://p4.music.126.net/g0qH9Xr9k4OKp03RLpqy_Q==/1367792466801028.jpg?param=130y130]]></ThumbMediaId></Music></xml>`);
     } else {
     	res.end('');
     }
