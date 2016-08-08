@@ -5,6 +5,5 @@
 		"token": "hhh",
 		"prefix": "https://api.weixin.qq.com/cgi-bin/"
 	},
-	"port": 3000,
-	"tokenPath": "../token.dat"
+	"port": 3000
 }

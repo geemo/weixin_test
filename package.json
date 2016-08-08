@@ -6,6 +6,7 @@
   "dependencies": {
     "connect": "^3.4.1",
     "form-data": "^1.0.0-rc4",
+    "formstream": "^1.0.0",
     "xml2js": "^0.4.16"
   },
   "scripts": {
