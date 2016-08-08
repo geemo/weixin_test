@@ -14,9 +14,9 @@ material
 // 	.uploadImg(path.resolve('../material/read.png'), 'image')
 // 	.then(data => console.dir(data), err => console.error(err));
 
-material
-	.getMaterialCount()
-	.then(data => console.dir(data), err => console.error(err));
+// material
+// 	.getMaterialCount()
+// 	.then(data => console.dir(data), err => console.error(err));
 
 // material
 // 	.batchGetMaterial({type: 'image', offset: 0, count: 1})
