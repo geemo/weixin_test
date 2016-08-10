@@ -32,9 +32,3 @@ const token = new AccessToken(config.wechat);
 // 			console.dir(e);
 // 		}
 // 	})
-
-function test(s){
-	console.dir(arguments);
-}
-
-console.log(test(55));

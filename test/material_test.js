@@ -7,7 +7,7 @@ const path = require('path');
 const material = new Material();
 
 // material
-// 	.upload(path.resolve('../material/read.png'), 'image')
+// 	.upload(path.resolve('../static/material/read.png'), 'image')
 // 	.then(data => {
 // 		console.dir(data)
 
@@ -18,7 +18,7 @@ const material = new Material();
 // 	}, err => console.error(err));
 
 // material
-// 	.uploadImg(path.resolve('../material/read.png'), 'image')
+// 	.uploadImg(path.resolve('../static/material/read.png'), 'image')
 // 	.then(data => console.dir(data), err => console.error(err));
 
 // material
@@ -39,7 +39,7 @@ const material = new Material();
 
 
 // material
-// 	.addMaterial(path.resolve('../material/tcp-handshake.png'), 'image')
+// 	.addMaterial(path.resolve('../static/material/tcp-handshake.png'), 'image')
 // 	.then(data => {
 // 		console.dir(data);
 // 	}, err => console.error(err));
