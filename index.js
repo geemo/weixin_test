@@ -35,7 +35,7 @@ app.use((req, res, next) => {
 			const noncestr = jsApi.genNonceStr(15);
 			const timestamp = jsApi.genTimestamp();
 			const url = 'http://jsnode.cn' + req.url;
-			console.log(url);
+
 			const signature = jsApi.genSign(noncestr, tk.ticket, timestamp, url);
 			const data = {
 				name: 'geemo',
@@ -43,8 +43,6 @@ app.use((req, res, next) => {
 				timestamp: timestamp,
 				signature: signature
 			};
-
-			console.dir(data);
 
 			ejs.renderFile(path.resolve('./static/html/index.html'), data, (err, str) => {
 				if(err) return next(err);
