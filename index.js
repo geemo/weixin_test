@@ -1,6 +1,8 @@
 'use strict';
 const http = require('http');
 const app = require('connect')();
+const ejs = require('ejs');
+const path = require('path');
 
 // middlewares
 const queryParser = require('./middleware/query-parser.js');
@@ -8,13 +10,53 @@ const checkSignature = require('./middleware/check-signature.js');
 const bodyParser = require('./middleware/body-parser.js');
 // config
 const config = require('./config/config.json');
+// lib
+const Ticket = require('./lib/wechat_ticket');
+const jsApi = require('./lib/wechat_js_sign.js');
+
+const ticket = new Ticket(config.wechat);
 
 // 给http.ServerResponse扩展reply方法
 require('./lib/wechat_reply.js')(http.ServerResponse);
 
+app.use((req, res, next) => {
+	if(/^\/favicon.ico/.test(req.url)) {
+		res.writeHead(404, {'Content-Type': 'text/plain'});
+		return res.end('Not Found');
+	}
+
+	next();
+});
 app.use(queryParser);
-app.use(checkSignature(config.wechat));
 app.use(bodyParser);
+app.use((req, res, next) => {
+	if(/^\/weixin/.test(req.url)){
+		ticket.get().then(tk => {
+			const noncestr = jsApi.genNonceStr(15);
+			const timestamp = jsApi.genTimestamp();
+			const url = 'http://jsnode.cn' + req.url;
+			console.log(url);
+			const signature = jsApi.genSign(noncestr, tk.ticket, timestamp, url);
+			const data = {
+				name: 'geemo',
+				noncestr: noncestr,
+				timestamp: timestamp,
+				signature: signature
+			};
+
+			console.dir(data);
+
+			ejs.renderFile(path.resolve('./static/html/index.html'), data, (err, str) => {
+				if(err) return next(err);
+				res.writeHead(200, {'Content-Type': 'text/html'});
+				res.end(str);
+			});
+		}, err => next(err));
+	} else {
+		next();
+	}
+});
+app.use(checkSignature(config.wechat));
 app.use((req, res, next) => {
 
     const body = req.body;
@@ -43,16 +85,10 @@ app.use((req, res, next) => {
 			 	FromUserName: body.ToUserName,
 			 	Articles: [
 			 		{
-			 			Title: 'asdf',
-			 			Description: 'bbb',
-			 			PicUrl: 'http://p4.music.126.net/g0qH9Xr9k4OKp03RLpqy_Q==/1367792466801028.jpg?param=130y130',
-			 			Url: 'http://music.163.com/'
-			 		},
-			 		{
-			 			Title: 'cccc',
-			 			Description: 'gggg',
-			 			PicUrl: 'http://p4.music.126.net/g0qH9Xr9k4OKp03RLpqy_Q==/1367792466801028.jpg?param=130y130',
-			 			Url: 'http://music.163.com/'
+			 			Title: 'node公众号测试',
+			 			Description: 'js-sdk测试',
+			 			PicUrl: 'http://img5.imgtn.bdimg.com/it/u=1372548949,303274540&fm=21&gp=0.jpg',
+			 			Url: 'http://jsnode.cn/weixin'
 			 		}
 			 	]
 			});
@@ -91,3 +127,13 @@ app.use((err, req, res, next) => {
 http
 	.createServer(app)
 	.listen(config.port, () => console.log(`server start on port ${config.port}`));
+
+
+process.on('uncaughtException', err => {
+	console.error(err);
+});
+
+process.on('unhandledRejection', (reason, p) => {
+    console.log("Unhandled Rejection at: Promise ", p, " reason: ", reason);
+    // application specific logging, throwing an error, or other logic here
+});

@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "connect": "^3.4.1",
+    "ejs": "^2.5.1",
     "formstream": "^1.0.0",
     "xml2js": "^0.4.16"
   },

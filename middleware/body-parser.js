@@ -10,13 +10,34 @@ exports = module.exports = (req, res, next) => {
 
     req.on('end', () => {
         let raw_body = Buffer.concat(chunks).toString('utf8');
+        const type = req.headers['content-type'];
 
-        utils.parseXml(raw_body).then(data => {
-        	req.body = data;
-        	next();
-        }, err => {
-        	next(err);
-        });
+        if(type) {
+            if (/json/.test(type)) {
+                let body = '';
+                try {
+                    body = JSON.parse(body);
+                } catch(e) {
+                    next(e);
+                }
+
+                req.body = body;
+                next();
+            } else if (/xml/.test(type)) {
+                utils.parseXml(raw_body).then(data => {
+                    req.body = data;
+                    next();
+                }, err => {
+                    next(err);
+                });
+            } else {
+                req.body = raw_body;
+                next();
+            }
+        } else {
+            req.body = raw_body;
+            next();
+        }
 
     });
 }
