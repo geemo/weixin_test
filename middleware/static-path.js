@@ -42,7 +42,7 @@ exports = module.exports = (static_path, expire_secs) => {
 	                    cacheHandle(res, ext);
 
                         const fileStream = fs.createReadStream(realPath);
-                        compressHandle(req, res, fileStream, ext, {code: 200, message: 'Ok'});
+                        fileStream.pipe(res);
 	                }
 	            }
 	        }
@@ -58,22 +58,6 @@ exports = module.exports = (static_path, expire_secs) => {
 
 	        res.setHeader('Expires', expires.toUTCString());
 	        res.setHeader('Cache-Control', 'max-age=' + maxAge);
-	    }
-	}
-
-	function compressHandle(req, res, stream, ext, status) {
-	    const compressMatch = /^(css|js|html|txt)$/i.test(ext);
-	    const acceptEncoding = req.headers['accept-encoding'];
-
-	    if (compressMatch && new RegExp('\\bgzip\\b', 'i').test(acceptEncoding)) {
-	        res.writeHead(status.code, status.message, { 'Content-Encoding': 'gzip' });
-	        stream.pipe(zlib.createGzip()).pipe(res);
-	    } else if (compressMatch && new RegExp('\\bdeflate\\b', 'i').test(acceptEncoding)) {
-	        res.writeHead(status.code, status.message, { 'Content-Encoding': 'deflate' });
-	        stream.pipe(zlib.createDeflate()).pipe(res);
-	    } else {
-	        res.writeHead(status.code, status.message);
-	        stream.pipe(res);
 	    }
 	}
 };
