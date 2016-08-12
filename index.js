@@ -1,131 +1,61 @@
 'use strict';
 const http = require('http');
-const app = require('connect')();
-const ejs = require('ejs');
 const path = require('path');
+const app = require('connect')();
 
-// middlewares
+// 配置文件
+const config = require('./config/config.json');
+
+// 中间件
+const favicon = require('./middleware/favicon.js');
 const queryParser = require('./middleware/query-parser.js');
+const staticPath = require('./middleware/static-path.js');
 const checkSignature = require('./middleware/check-signature.js');
 const bodyParser = require('./middleware/body-parser.js');
-// config
-const config = require('./config/config.json');
-// lib
-const Ticket = require('./lib/wechat_ticket');
-const jsApi = require('./lib/wechat_js_sign.js');
 
-const ticket = new Ticket(config.wechat);
+// 路由控制器
+const wechat_web = require('./route/wechat_web/index.js');
+const wechat_app = require('./route/wechat_app/index.js');
 
 // 给http.ServerResponse扩展reply方法
 require('./lib/wechat_reply.js')(http.ServerResponse);
 
-app.use((req, res, next) => {
-	if(/^\/favicon.ico/.test(req.url)) {
-		res.writeHead(404, {'Content-Type': 'text/plain'});
-		return res.end('Not Found');
-	}
-
-	next();
-});
+// favicon响应处理
+app.use(favicon);
+// 查询字符串解析
 app.use(queryParser);
+// 消息体解析
 app.use(bodyParser);
-app.use((req, res, next) => {
-	if(/^\/weixin/.test(req.url)){
-		ticket.get().then(tk => {
-			const noncestr = jsApi.genNonceStr(15);
-			const timestamp = jsApi.genTimestamp();
-			const url = 'http://jsnode.cn' + req.url;
-
-			const signature = jsApi.genSign(noncestr, tk.ticket, timestamp, url);
-			const data = {
-				name: 'geemo',
-				noncestr: noncestr,
-				timestamp: timestamp,
-				signature: signature
-			};
-
-			ejs.renderFile(path.resolve('./static/html/index.html'), data, (err, str) => {
-				if(err) return next(err);
-				res.writeHead(200, {'Content-Type': 'text/html'});
-				res.end(str);
-			});
-		}, err => next(err));
-	} else {
-		next();
-	}
-});
+// 静态文件响应中间件
+app.use('/weixin', staticPath(path.join(__dirname, './static')));
+// 微信web端逻辑
+app.use('/weixin', wechat_web);
+// 校验签名
 app.use(checkSignature(config.wechat));
+// 微信app端逻辑
+app.use(wechat_app);
+
+// 404错误处理
 app.use((req, res, next) => {
-
-    const body = req.body;
-    console.log(body);
-    if (body.MsgType === 'text') {
-    	if (body.Content === '1'){
-    		// 文本消息
-	  		res.reply({
-	  		  	ToUserName: body.FromUserName,
-	  		  	FromUserName: body.ToUserName,
-			 	Content: 'hello world'
-			});
-    	} else　if (body.Content === '2') {
-    		// 音乐消息
-			res.reply({
-				ToUserName: body.FromUserName,
-				FromUserName: body.ToUserName,
-				Title: 'aaa',
-				Description: 'bbb',
-				MusicUrl: 'http://mp3.haoduoge.com/s/2016-08-07/1470550774.mp3'
-			});
-    	} else if (body.Content === '3') {
-    		// 图文消息
-			res.reply({
-				ToUserName: body.FromUserName,
-			 	FromUserName: body.ToUserName,
-			 	Articles: [
-			 		{
-			 			Title: 'node公众号测试',
-			 			Description: 'js-sdk测试',
-			 			PicUrl: 'http://img5.imgtn.bdimg.com/it/u=1372548949,303274540&fm=21&gp=0.jpg',
-			 			Url: 'http://jsnode.cn/weixin'
-			 		}
-			 	]
-			});
-    	} else if (body.Content === '4') {
-    		// 图片消息
-    		res.reply({
-    			ToUserName: body.FromUserName,
-    			FromUserName: body.ToUserName,
-    			MsgType: 'image',
-    			MediaId: 'JrSYA7Uz-y2xoUn2qXYt1t8nFayhGv4BaIzfnXYkBQAanOoEMMiKQrX6ebnUDaBz'
-    		});
-    	} else {
-    		res.reply({
-    			ToUserName: body.FromUserName,
-    			FromUserName: body.ToUserName,
-    			Content: '未知消息'
-    		});
-    	}
-
-    } else {
-    	res.end('');
-    }
+	res.writeHead(404, {'Content-Type': 'text/plain'});
+	res.end(`the request URL ${req.url} was not found on this server!`);
 });
 
+// 错误处理中间件
 app.use((err, req, res, next) => {
 	if(err) console.log(err);
 	
-	if(req.headersSent) {
+	if(res.headersSent) {
 		next(err);
 	} else {
 		res.writeHead(500);
-		res.end();
+		res.end(err.stack);
 	}
 });
 
 http
 	.createServer(app)
 	.listen(config.port, () => console.log(`server start on port ${config.port}`));
-
 
 process.on('uncaughtException', err => {
 	console.error(err);
