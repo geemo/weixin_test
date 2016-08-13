@@ -30,7 +30,7 @@ module.exports = (req, res, next) => {
     	} else if (content === '3') {
     		// 图片消息
             reply_opts.MsgType = 'image';
-            reply_opts.MediaId = 'JrSYA7Uz-y2xoUn2qXYt1t8nFayhGv4BaIzfnXYkBQAanOoEMMiKQrX6ebnUDaBz';
+            reply_opts.MediaId = '2EifC9euA-j8ZqnS8h3Gqa4lz-kiyFXXT44wmI8x_5Y';
             res.reply(reply_opts);
     	} else {
             if(content.length > 10) {
