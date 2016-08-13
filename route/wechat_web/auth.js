@@ -9,8 +9,7 @@ exports = module.exports = (req, res, next) => {
 	ticket.get().then(tk => {
 		const noncestr = jsApi.genNonceStr(15);
 		const timestamp = jsApi.genTimestamp();
-		const url = 'http://jsnode.cn/weixin';
-		console.log(url);
+		const url = req.query.url;
 		const signature = jsApi.genSign(noncestr, tk.ticket, timestamp, url);
 		const data = {
 			appId: config.wechat.appId,

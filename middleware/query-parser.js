@@ -9,7 +9,7 @@ exports = module.exports = (req, res, next) => {
 
 		pairs
 			.map(pair => pair.split('='))
-			.forEach(pair => query[pair[0]] = pair[1]);
+			.forEach(pair => query[pair[0]] = decodeURIComponent(pair[1]));
 	}
 
 	req.query = query;

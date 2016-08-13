@@ -57,10 +57,12 @@ http
 	.createServer(app)
 	.listen(config.port, () => console.log(`server start on port ${config.port}`));
 
+// 未捕获异常处理
 process.on('uncaughtException', err => {
 	console.error(err);
 });
 
+// promise未处理reject异常处理
 process.on('unhandledRejection', (reason, p) => {
     console.log("Unhandled Rejection at: Promise ", p, " reason: ", reason);
     // application specific logging, throwing an error, or other logic here

@@ -1,8 +1,8 @@
 "use strict"
+
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-const zlib = require('zlib');
 
 const mime = require('../mime.json');
 
@@ -22,8 +22,8 @@ exports = module.exports = (static_path, expire_secs) => {
 
 	    fs.stat(realPath, (err, stats) => {
 	        if (err) {
-	            res.writeHead(404, 'Not Found', { 'Content-Type': 'text/plain' });
-	            res.end('the request URL ' + pathname + ' was not found on this server!');
+	            res.writeHead(404, { 'Content-Type': 'text/plain' });
+	            res.end(`the request URL ${pathname} was not found on this server!`);
 	        } else {
 	            if (!stats.isFile()) {
 	                next();
@@ -61,4 +61,3 @@ exports = module.exports = (static_path, expire_secs) => {
 	    }
 	}
 };
-
