@@ -1,62 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-	<title>Document</title>
-</head>
-<body>
-	<h1><%- name %></h1>
-	<span id="network"></span>
-	<button id="show-net-state">点击获取网络状态</button>
-	<button id="record">点击录音</button>
-	<img src="weixin/material/read.png">
-	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-	<!-- <script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script> -->
-	<script>
+<%- include header %>
+<span id="network"></span>
+<button id="show-net-state">点击获取网络状态</button>
+<button id="record">点击录音</button>
+<script src="weixin/js/ajax.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<!-- <script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script> -->
+<script>
+
+ajax({
+	method: 'GET',
+	url: 'http://jsnode.cn/weixin/auth',
+	callback: function(status, result) {
+		console.log(typeof status, status);
+		console.dir(result);
 		wx.config({
 		    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-		    appId: 'wx07a4a036313c48e0', // 必填，公众号的唯一标识
-		    timestamp: '<%- timestamp %>', // 必填，生成签名的时间戳
-		    nonceStr: '<%- noncestr %>', // 必填，生成签名的随机串
-		    signature: '<%- signature %>',// 必填，签名，见附录1
-		    jsApiList: [
-		    	'onMenuShareTimeline',
-				'onMenuShareAppMessage',
-				'onMenuShareQQ',
-				'onMenuShareWeibo',
-				'onMenuShareQZone',
-				'startRecord',
-				'stopRecord',
-				'onVoiceRecordEnd',
-				'playVoice',
-				'pauseVoice',
-				'stopVoice',
-				'onVoicePlayEnd',
-				'uploadVoice',
-				'downloadVoice',
-				'chooseImage',
-				'previewImage',
-				'uploadImage',
-				'downloadImage',
-				'translateVoice',
-				'getNetworkType',
-				'openLocation',
-				'getLocation',
-				'hideOptionMenu',
-				'showOptionMenu',
-				'hideMenuItems',
-				'showMenuItems',
-				'hideAllNonBaseMenuItem',
-				'showAllNonBaseMenuItem',
-				'closeWindow',
-				'scanQRCode',
-				'chooseWXPay',
-				'openProductSpecificView',
-				'addCard',
-				'chooseCard',
-				'openCard'
-		    ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+		    appId: result.appId, // 必填，公众号的唯一标识
+		    timestamp: result.timestamp, // 必填，生成签名的时间戳
+		    nonceStr: result.nonceStr, // 必填，生成签名的随机串
+		    signature: result.signature,// 必填，签名，见附录1
+		    jsApiList: result.jsApiList
 		});
 
 		wx.ready(function(){
@@ -65,10 +28,10 @@
 			var net_btn = document.querySelector('#show-net-state');
 			net_btn.onclick = function(e){
 				wx.getNetworkType({
-    				success: function (res) {
-        				var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
-        				document.querySelector('#network').innerHTML = networkType;
-    				}
+					success: function (res) {
+	    				var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
+	    				document.querySelector('#network').innerHTML = networkType;
+					}
 				});
 			};
 
@@ -102,6 +65,8 @@
 		wx.error(function(res){
 			console.dir(res);
 		});
-	</script>
-</body>
-</html>
+	}
+});
+
+</script>
+<%- include footer %>

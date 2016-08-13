@@ -14,7 +14,7 @@ const checkSignature = require('./middleware/check-signature.js');
 const bodyParser = require('./middleware/body-parser.js');
 
 // 路由控制器
-const wechat_web = require('./route/wechat_web/index.js');
+const wechat_web = require('./route/wechat_web/router_switcher.js');
 const wechat_app = require('./route/wechat_app/index.js');
 
 // 给http.ServerResponse扩展reply方法
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 	res.end(`the request URL ${req.url} was not found on this server!`);
 });
 
-// 错误处理中间件
+// 500错误处理
 app.use((err, req, res, next) => {
 	if(err) console.log(err);
 	
