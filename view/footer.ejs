@@ -20,6 +20,57 @@ ajax({
 			});
 
 			wx.ready(function(){
+				var iframe = document.getElementsByTagName('iframe')[0];
+				iframe.onload = function(e){
+					var search_ipt = iframe.document.querySelector('input[name=search]');
+					var search_parent = search_ipt.parentElement;
+					var voice_search_btn = attachVoiceBtn(search_parent);
+
+					var time = 0;
+					var timer = null;
+					voice_search_btn.ontouchstart = function(e) {
+						time = 0;
+						clearInterval(timer);
+						timer = setInterval(function(){++time;}, 1000);
+						console.log('please to voice');
+						this.style.background = '#000';
+						wx.startRecord();
+					};
+
+					voice_search_btn.ontouchend = function(e) {
+						clearInterval(timer);
+						wx.stopRecord({
+						    success: function (res) {
+						        var localId = res.localId;
+
+						        wx.translateVoice({
+								   localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
+								   isShowProgressTips: 1, // 默认为1，显示进度提示
+								   success: function (res) { // 语音识别的结果
+								       search_ipt.value = res.translateResult;
+								       var eventObj = document.createEvent('KeyboardEvent');
+								       eventObj.initKeyBoadEvent('keydown', true, true, document.defaultView, 13);
+								       search_ipt.dispatchEvent(eventObj);
+								   }
+								});
+						    }
+						}));
+						this.style.background = '#555';
+					};
+				};
+
+				function showTip(msg){
+
+				}
+
+				function attachVoiceBtn(elem){
+					var btn = document.createElement('button');
+					btn.innerHTML = '说';
+					btn.style.position = 'absolute';
+					btn.style.height = '40px';
+					elem.appendChild(btn);
+					return elem;
+				}
 				
 				// var net_btn = document.querySelector('#show-net-state');
 				// net_btn.onclick = function(e){
