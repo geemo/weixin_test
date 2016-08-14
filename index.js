@@ -27,7 +27,7 @@ app.use(queryParser);
 // 消息体解析
 app.use(bodyParser);
 // 静态文件响应中间件
-app.use('/weixin', staticPath(path.join(__dirname, './static')));
+app.use('/weixin', staticPath(path.join(__dirname, './static'), 2));
 // 微信web端逻辑
 app.use('/weixin', wechat_web);
 // 校验签名

@@ -2,65 +2,70 @@
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <!-- <script src="//cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script> -->
 <script>
-console.log(location.href.replace(/\#.*/, ''));
 ajax({
 	method: 'GET',
 	url: 'http://jsnode.cn/weixin/auth?url=' + encodeURIComponent(location.href.replace(/\#.*/, '')),
-	callback: function(status, result) {	
-		wx.config({
-		    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-		    appId: result.appId, // 必填，公众号的唯一标识
-		    timestamp: result.timestamp, // 必填，生成签名的时间戳
-		    nonceStr: result.nonceStr, // 必填，生成签名的随机串
-		    signature: result.signature,// 必填，签名，见附录1
-		    jsApiList: result.jsApiList
-		});
+	callback: function(err, data) {	
+		if(err) {
+			console.log(err);
+		} else {
+			var result = data.data;
+			wx.config({
+			    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			    appId: result.appId, // 必填，公众号的唯一标识
+			    timestamp: result.timestamp, // 必填，生成签名的时间戳
+			    nonceStr: result.nonceStr, // 必填，生成签名的随机串
+			    signature: result.signature,// 必填，签名，见附录1
+			    jsApiList: result.jsApiList
+			});
 
-		wx.ready(function(){
-			
-			// var net_btn = document.querySelector('#show-net-state');
-			// net_btn.onclick = function(e){
-			// 	wx.getNetworkType({
-			// 		success: function (res) {
-	  //   				var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
-	  //   				document.querySelector('#network').innerHTML = networkType;
-			// 		}
-			// 	});
-			// };
+			wx.ready(function(){
+				
+				// var net_btn = document.querySelector('#show-net-state');
+				// net_btn.onclick = function(e){
+				// 	wx.getNetworkType({
+				// 		success: function (res) {
+		  //   				var networkType = res.networkType; // 返回网络类型2g，3g，4g，wifi
+		  //   				document.querySelector('#network').innerHTML = networkType;
+				// 		}
+				// 	});
+				// };
 
-			var record_btn = document.querySelector('#record');
-			var isRecording = false;
-			record_btn.onclick = function(e){
-				if(!isRecording){
-					wx.startRecord();
-					isRecording = true;
-					this.innerHTML = '录音中...';
-				} else {
-					wx.stopRecord({
-					    success: function (res) {
-					        var localId = res.localId;
+				// var record_btn = document.querySelector('#record');
+				// var isRecording = false;
+				// record_btn.onclick = function(e){
+				// 	if(!isRecording){
+				// 		wx.startRecord();
+				// 		isRecording = true;
+				// 		this.innerHTML = '录音中...';
+				// 	} else {
+				// 		wx.stopRecord({
+				// 		    success: function (res) {
+				// 		        var localId = res.localId;
 
-					        wx.translateVoice({
-							   localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
-							   isShowProgressTips: 1, // 默认为1，显示进度提示
-							   success: function (res) {
-							       alert(res.translateResult); // 语音识别的结果
-							       record_btn.innerHTML = '点击录音';
-							       isRecording = false;
-							   }
-							});
-					    }
-					});
-				}
-			};
-		});
+				// 		        wx.translateVoice({
+				// 				   localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
+				// 				   isShowProgressTips: 1, // 默认为1，显示进度提示
+				// 				   success: function (res) {
+				// 				       alert(res.translateResult); // 语音识别的结果
+				// 				       record_btn.innerHTML = '点击录音';
+				// 				       isRecording = false;
+				// 				   }
+				// 				});
+				// 		    }
+				// 		});
+				// 	}
+				// };
+			});
 
-		wx.error(function(res){
-			console.dir(res);
-		});
+			wx.error(function(res){
+				console.dir(res);
+			});
+		}
 	}
 });
 
 </script>
+<!-- <script type="text/javascript" src="/weixin/js/main.js"></script> -->
 </body>
 </html>

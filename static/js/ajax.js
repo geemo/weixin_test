@@ -24,12 +24,18 @@ function ajax(obj) {
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (callback) {
-                            if (new RegExp('json').test(xhr.getResponseHeader('Content-Type'))) {
-                                callback(xhr.status, JSON.parse(xhr.responseText));
-                            } else {
-                                callback(xhr.status, xhr.responseText);
-                            }
-                        }
+                            var data = {};
+                            data.status = xhr.status;
+                            if (/json/.test(xhr.getResponseHeader('Content-Type')))
+                                data.data = JSON.parse(xhr.responseText);
+                            else
+                                data.data = xhr.responseText;
+
+                            if(/^(?:4|5)\d\d$/.test(String(data.status)))
+                                callback(data);
+                            else
+                                callback(null, data);
+                        }   
                     }
                 };
 
